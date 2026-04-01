@@ -13,12 +13,12 @@ jobs:
        matrix:
           compiler:
             - { compiler: LLVM, CC: clang, CXX: clang++}
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-24.04"
     env:
        CC: ${{ matrix.compiler.CC }}
        CXX: ${{ matrix.compiler.CXX }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
     - name: get dependencies
       run: |
          sudo apt update
@@ -28,7 +28,7 @@ jobs:
          sudo apt-get install libnet-dns-perl
          sudo cpan -T -i Test::More
     - name: 'checkout luajit2'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v6
       with:
         repository: openresty/luajit2
         path: luajit2
