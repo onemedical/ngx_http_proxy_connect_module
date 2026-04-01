@@ -10,7 +10,7 @@ jobs:
   test-nginx:
     strategy:
        matrix:
-         version: [1.22.1, 1.23.2]
+         version: [1.26.2, 1.27.1]
        fail-fast: false
     runs-on: "ubuntu-20.04"
 
@@ -24,12 +24,15 @@ jobs:
          sudo apt install -y libpcre3 libpcre3-dev
          sudo apt-get install libnet-dns-perl
          sudo cpan -T -i Test::More
+    - name: 'checkout luajit2'
+      uses: actions/checkout@v3
+      with:
+        repository: openresty/luajit2
+        path: luajit2
     - name: install luajit
+      working-directory: luajit2
       run: |
          pwd
-         wget https://luajit.org/download/LuaJIT-2.1.0-beta3.tar.gz
-         tar xf LuaJIT-2.1.0-beta3.tar.gz
-         cd LuaJIT-2.1.0-beta3
          make -j
          sudo make install
          ls /usr/local/lib/ |grep lua
@@ -59,6 +62,7 @@ jobs:
          pwd
          git clone https://github.com/openresty/lua-resty-core.git
          cd lua-resty-core
+         git checkout d2179dbcb3d6d77127462cadd40cca103d89a52a
          sudo make install PREFIX=/opt/nginx
          cd ..
          git clone https://github.com/openresty/lua-resty-lrucache.git
@@ -80,8 +84,9 @@ jobs:
       run: |
          pwd
          cd nginx
-         sed -i -e "s+#LUA_PACKAGE_PATH+lua_package_path \"/opt/nginx/lib/lua/?.lua;;\";+" ../t/*.t
-         grep -i lua_package_path ../t/*.t
+         #sed -i -e "s+#LUA_PACKAGE_PATH+lua_package_path \"/opt/nginx/lib/lua/?.lua;;\";+" ../t/*.t
+         #grep -i lua_package_path ../t/*.t
+         export TEST_NGINX_GLOBALS_HTTP='lua_package_path "/opt/nginx/lib/lua/?.lua;;";'
          nginx_tests_lib_path=../nginx-tests/lib
          proxy_connect_test_cases=../t/
          export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
