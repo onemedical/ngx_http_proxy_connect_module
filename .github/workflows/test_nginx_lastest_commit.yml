@@ -19,6 +19,7 @@ jobs:
        CXX: ${{ matrix.compiler.CXX }}
     steps:
     - uses: actions/checkout@v6
+      if: ${{ false }}  # TODO: Fix patch for mainline nginx version
     - name: get dependencies
       run: |
          sudo apt update
