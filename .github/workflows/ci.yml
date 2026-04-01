@@ -10,7 +10,7 @@ jobs:
   test-nginx:
     strategy:
        matrix:
-         version: [1.26.2, 1.27.1, 1.28.2]
+         version: [1.26.3, 1.28.3]
        fail-fast: false
     runs-on: "ubuntu-24.04"
 
